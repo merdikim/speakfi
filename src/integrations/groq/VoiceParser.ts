@@ -58,7 +58,7 @@ class VoiceCommandParser {
         ],
       })
 
-      const transactionString = response.choices[0].message.content || "";
+      const transactionString = response.choices[0].message.content || ''
       const transaction = JSON.parse(transactionString) as DeFiTransaction
 
       return transaction

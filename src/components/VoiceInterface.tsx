@@ -3,16 +3,17 @@ import VoiceInput from './VoiceInput'
 import useVoiceCommand from '@/hooks/useVoiceCommand'
 import { cn } from '@/lib/utils'
 import TransactionLoading from './skeletons/TransactionLoading'
+import { useDisconnect } from 'wagmi'
 
 const VoiceDeFiInterface: React.FC = () => {
   const [transcript, setTranscript] = useState('')
   const [audioCommand, setAudioCommand] = useState('')
-  const { transaction, isTransactionLoading, isTransactionError } = useVoiceCommand(audioCommand)
-  //const [isExecuting, setIsExecuting] = useState(false)
+  const { transaction, isTransactionLoading, isTransactionError } =
+    useVoiceCommand(audioCommand)
+  const { disconnect } = useDisconnect()
 
-  const isTransactionValid = transaction && transaction.steps && transaction.steps.length > 0
-
-  
+  const isTransactionValid =
+    transaction && transaction.steps && transaction.steps.length > 0
 
   // const executeTransaction = async () => {
   //   if (!transaction) return
@@ -44,14 +45,17 @@ const VoiceDeFiInterface: React.FC = () => {
   // }
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-8"> 
-      {/* <header className="text-center mb-2">
-        <p className="text-gray-400 text-sm">
-          Speak once. We handle the chains.
-        </p>
-      </header> */}
+    <div className="h-full w-full flex flex-col items-center p-8">
+      <button onClick={() => disconnect()}>Disconnect</button>
 
-      <div className={cn((isTransactionValid && !isTransactionLoading) ? "justify-start": "justify-center","h-full transition-all ease-in-out space-y-2 max-w-2xl w-full flex flex-col items-center")}>
+      <div
+        className={cn(
+          isTransactionValid && !isTransactionLoading
+            ? 'justify-start'
+            : 'justify-center',
+          'h-full transition-all ease-in-out space-y-2 max-w-2xl w-full flex flex-col items-center',
+        )}
+      >
         <VoiceInput
           setTranscript={setTranscript}
           setAudioCommand={setAudioCommand}
@@ -68,8 +72,8 @@ const VoiceDeFiInterface: React.FC = () => {
             </div>
           )} */}
         </div>
-         {isTransactionLoading && (<TransactionLoading />)}
-        
+        {isTransactionLoading && <TransactionLoading />}
+
         {isTransactionValid && (
           <div className="bg-white w-full rounded-2xl shadow-lg p-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
