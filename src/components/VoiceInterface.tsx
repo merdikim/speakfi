@@ -7,7 +7,7 @@ import { useDisconnect } from 'wagmi'
 
 const VoiceDeFiInterface: React.FC = () => {
   const [transcript, setTranscript] = useState('')
-  const [audioCommand, setAudioCommand] = useState('')
+  const [audioCommand, setAudioCommand] = useState('swap')
   const { transaction, isTransactionLoading, isTransactionError } =
     useVoiceCommand(audioCommand)
   const { disconnect } = useDisconnect()

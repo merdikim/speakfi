@@ -2,32 +2,14 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
+import reportWebVitals from './reportWebVitals.ts'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import './styles.css'
+import '@rainbow-me/rainbowkit/styles.css'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
-
-import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
-import '@rainbow-me/rainbowkit/styles.css'
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit'
-import { WagmiProvider } from 'wagmi'
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base
-} from 'wagmi/chains'
-
-
-const config = getDefaultConfig({
-  appName: 'SpeakFi',
-  projectId: 'speakfi-xyz-4893',
-  chains: [mainnet, polygon, optimism, arbitrum, base]
-});
+import { CustomWagmiProvider } from './integrations/lifi/provider.tsx'
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext()
 const router = createRouter({
@@ -55,17 +37,14 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-        <WagmiProvider config={config}>
-          <RainbowKitProvider modalSize='compact'>
+        <CustomWagmiProvider>
+          <RainbowKitProvider modalSize="compact">
             <RouterProvider router={router} />
           </RainbowKitProvider>
-        </WagmiProvider>
+        </CustomWagmiProvider>
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )
 }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()
