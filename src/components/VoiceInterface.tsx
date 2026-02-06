@@ -3,14 +3,14 @@ import VoiceInput from './VoiceInput'
 import useVoiceCommand from '@/hooks/useVoiceCommand'
 import { cn } from '@/lib/utils'
 import TransactionLoading from './skeletons/TransactionLoading'
-import { useDisconnect } from 'wagmi'
+import ChainSelection from './ChainSelection'
+import { Profile } from './Profile'
 
 const VoiceDeFiInterface: React.FC = () => {
   const [transcript, setTranscript] = useState('')
   const [audioCommand, setAudioCommand] = useState('swap')
   const { transaction, isTransactionLoading, isTransactionError } =
     useVoiceCommand(audioCommand)
-  const { disconnect } = useDisconnect()
 
   const isTransactionValid =
     transaction && transaction.steps && transaction.steps.length > 0
@@ -46,8 +46,7 @@ const VoiceDeFiInterface: React.FC = () => {
 
   return (
     <div className="h-full w-full flex flex-col items-center p-8">
-      <button onClick={() => disconnect()}>Disconnect</button>
-
+      <Profile />
       <div
         className={cn(
           isTransactionValid && !isTransactionLoading
@@ -56,6 +55,7 @@ const VoiceDeFiInterface: React.FC = () => {
           'h-full transition-all ease-in-out space-y-2 max-w-2xl w-full flex flex-col items-center',
         )}
       >
+        {/* <ChainSelection /> */}
         <VoiceInput
           setTranscript={setTranscript}
           setAudioCommand={setAudioCommand}

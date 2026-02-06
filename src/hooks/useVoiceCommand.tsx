@@ -1,5 +1,5 @@
 import { VoiceCommandParser } from '@/integrations/groq/VoiceParser'
-import { getBridgeRoutes } from '@/integrations/lifi'
+import { executeSelectedRoute, getBridgeRoute } from '@/integrations/lifi'
 import { useQuery } from '@tanstack/react-query'
 import { useAccount } from 'wagmi'
 
@@ -18,7 +18,8 @@ const useVoiceCommand = (audioCommand: string) => {
     queryFn: async () => {
       if (audioCommand.length == 0 || !address) return null
       const result = '' //await voiceCommandParser.parseCommand(audioCommand)
-      const quote = await getBridgeRoutes({ address })
+      //const bridgeRoute = await getBridgeRoute({ address })
+      //const res = await executeSelectedRoute({ route: bridgeRoute })
 
       return result as unknown as DeFiTransaction
     },
