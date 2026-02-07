@@ -23,7 +23,7 @@ const connectors = connectorsForWallets(
   ],
   {
     appName: 'SpeakFi',
-    projectId: 'c8b1e5a9c9b0c8fbbd9e7c3b2a1d2e',
+    projectId: 'YOUR_PROJECT_ID',
   }
 );
 
