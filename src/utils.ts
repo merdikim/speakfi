@@ -24,3 +24,12 @@ export const chains = {
     icon: 'https://cryptologos.cc/logos/base-base-logo.png',
   },
 }
+
+export const formatAddress = (address: string, length: number = 4): string => {
+  return `${address.slice(0, length)}...${address.slice(-length)}`
+}
+
+export const formatAmount = (amount: string, decimals: number): string => {
+  const num = parseFloat(amount) / Math.pow(10, decimals)
+  return num.toFixed(2)
+}

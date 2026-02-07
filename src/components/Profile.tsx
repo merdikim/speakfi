@@ -6,6 +6,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { formatAddress } from '@/utils'
 
 export const Profile = () => {
   const { disconnect } = useDisconnect()
@@ -49,7 +50,7 @@ const ProfileImage = () => {
           {name && <span className="font-semibold">{name}</span>}
           {!name && (
             <span className="text-gray-500 text-sm">
-              {address?.slice(0, 3)}...{address?.slice(-3)}
+              {formatAddress(address || '', 3)}
             </span>
           )}
         </div>
