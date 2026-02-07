@@ -9,7 +9,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
-import { CustomWagmiProvider } from './integrations/lifi/provider.tsx'
+import { CustomWagmiProvider } from './integrations/lifi/Provider.tsx'
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext()
 const router = createRouter({

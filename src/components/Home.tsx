@@ -47,13 +47,13 @@ const Home: React.FC = () => {
   }, [])
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-8">
+    <div className="h-full w-full flex flex-col items-center p-4 lg:p-8">
       <Profile />
       <div
         className={cn(
           isTransactionDetailsValid ||
             (result?.transcript && result.transcript.length > 0)
-            ? 'justify-start pt-20'
+            ? 'justify-start pt-5 lg:pt-10'
             : 'justify-center',
           'h-full transition-all ease-in-out space-y-2 max-w-2xl w-full flex flex-col items-center',
         )}

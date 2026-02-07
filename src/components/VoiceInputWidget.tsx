@@ -28,26 +28,26 @@ const VoiceInputWidget = ({
   }
 
   return (
-    <div className="bg-white min-h-[200px] flex flex-col justify-center w-full rounded-2xl shadow-lg px-8 border border-gray-100">
-      <div className="flex flex-col items-center">
+    <div className="bg-white min-h-30 lg:min-h-50 flex flex-col justify-center w-full rounded-2xl shadow-lg px-8 border border-gray-100">
+      <div className="flex flex-col items-center gap-2 lg:gap-4">
         <button
           onClick={isRecording ? stop : start}
           disabled={!isLoaded || !!error}
-          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all transform hover:scale-105 ${
+          className={`h-10 w-10 lg:w-14 lg:h-14 rounded-full flex items-center justify-center transition-all transform hover:scale-105 ${
             isRecording
               ? 'bg-red-500 hover:bg-red-600 animate-pulse'
               : 'bg-blue-500 hover:bg-blue-600'
           } disabled:opacity-50 disabled:cursor-not-allowed shadow-xl`}
         >
           {isRecording ? (
-            <MicOff className="w-8 h-8 text-white" />
+            <MicOff className="h-4 w-4 lg:w-8 lg:h-8 text-white" />
           ) : (
-            <Mic className="w-8 h-8 text-white" />
+            <Mic className="h-4 w-4 lg:w-8 lg:h-8 text-white" />
           )}
         </button>
 
         {isLoaded && (
-          <p className="mt-6 text-gray-600 text-center">
+          <p className=" text-gray-600 text-center text-sm lg:text-base">
             {isRecording
               ? 'Recording... Speak your command'
               : 'Click the microphone to start'}

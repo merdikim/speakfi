@@ -1,5 +1,6 @@
 import { ChainType, EVM, config, createConfig, getChains } from '@lifi/sdk'
 import { useSyncWagmiConfig } from '@lifi/wallet-management'
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 import { useQuery } from '@tanstack/react-query'
 import { getWalletClient, switchChain } from '@wagmi/core'
 import { type FC, type PropsWithChildren } from 'react'
@@ -7,9 +8,24 @@ import { createClient, http } from 'viem'
 import { base, mainnet, optimism, polygon } from 'viem/chains'
 import type { Config } from 'wagmi'
 import { WagmiProvider, createConfig as createWagmiConfig } from 'wagmi'
-import { injected } from 'wagmi/connectors'
+import {
+  rainbowWallet,
+  walletConnectWallet,
+  metaMaskWallet
+} from '@rainbow-me/rainbowkit/wallets';
 
-const connectors = [injected()]
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Suggested',
+      wallets: [rainbowWallet, walletConnectWallet, metaMaskWallet],
+    },
+  ],
+  {
+    appName: 'SpeakFi',
+    projectId: 'c8b1e5a9c9b0c8fbbd9e7c3b2a1d2e',
+  }
+);
 
 const wagmiConfig: Config = createWagmiConfig({
   chains: [mainnet, optimism, base, polygon],

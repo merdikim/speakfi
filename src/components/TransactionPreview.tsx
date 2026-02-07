@@ -1,32 +1,36 @@
-import { formatAmount } from '@/utils'
+import { executeSelectedRoute } from '@/integrations/lifi'
+import { chains, formatAmount } from '@/utils'
 import type { Route } from '@lifi/sdk'
 import { ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 
 
 const getChainName = (chainId: number): string => {
-  const chains: { [key: number]: string } = {
-    1: 'Ethereum',
-    137: 'Polygon',
-    56: 'BSC',
-    42161: 'Arbitrum',
-    10: 'Optimism',
-  }
-  return chains[chainId] || `Chain ${chainId}`
+  const chain = Object.values(chains).find((ch) => ch?.chainId === chainId)
+  return chain?.name || `Chain ${chainId}`
 }
 
+
 const TransactionPreview = ({ tx }: { tx: Route }) => {
- 
   const fromAmount = formatAmount(tx.fromAmount, tx.fromToken.decimals)
   const toAmount = formatAmount(tx.toAmount, tx.toToken.decimals)
+  const [error, setError] = useState<string | null>(null)
+  const [isExecuting, setIsExecuting] = useState(false)
 
-  const confirmTransaction = () => {
-    // Implement transaction execution logic here
-    alert('Transaction confirmed! Executing...')
-    //const res = await executeSelectedRoute({ route: bridgeRoute })
+  const confirmTransaction = async() => {
+    try {
+      setIsExecuting(true)
+      const res = await executeSelectedRoute({ route: tx })
+      console.log(res)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to confirm transaction')
+    } finally {
+      setIsExecuting(false)
+    }
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-white w-full rounded-2xl shadow-lg p-8 border border-gray-200">
+    <div className="bg-linear-to-br from-gray-50 to-white w-full rounded-2xl shadow-lg p-4 md:p-8 border border-gray-200">
       <div className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-2">
           Transaction Preview
@@ -77,7 +81,7 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
 
           {/* Arrow */}
           <div className="flex flex-col items-center">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-md">
+            <div className="w-6 h-6 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shadow-md">
               <ChevronRight size={22} />
             </div>
             {tx.containsSwitchChain && (
@@ -152,7 +156,10 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
       </div> */}
 
       {/* Action Buttons */}
-      <div className="flex gap-3 mt-10">
+      {error && (
+        <div className="text-red-500 text-sm mt-2 text-center pt-5">{error}</div>
+      )}
+      <div className="flex flex-col md:flex-row gap-3 mt-10">
         <button
           className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
         >
@@ -160,9 +167,17 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
         </button>
         <button
           onClick={confirmTransaction}
-          className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+          disabled={isExecuting || !!error}
+          className="flex-1 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Confirm & Execute
+          {isExecuting ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="animate-spin">⚙️</span>
+              Executing...
+            </span>
+          ) : (
+            'Confirm & Execute'
+          )}
         </button>
       </div>
     </div>

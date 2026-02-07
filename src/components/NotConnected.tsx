@@ -13,19 +13,19 @@ const NotConnected = () => {
         borderColor="#fff"
         hoverFillColor="#fff"
       />
-      <div className="absolute inset-0 h-full w-full bg-transparent flex flex-col items-center justify-center">
+      <div className="absolute inset-0 h-full w-full bg-transparent flex flex-col items-center justify-center px-4">
         <div className="text-center mb-2">
           <h1 className="text-black text-2xl font-semibold mb-4">
             Speak once. We handle the chains.
           </h1>
         </div>
-        <div className="h-64 max-w-2xl w-full bg-white rounded-2xl shadow-lg p-8 border border-gray-100 flex flex-col items-center justify-center">
-          <p className="text-gray-500 text-lg">
+        <div className="h-56 md:h-64 max-w-2xl w-full bg-white rounded-2xl shadow-lg p-3 md:p-8 border border-gray-100 flex flex-col items-center justify-center">
+          <p className="text-gray-500 text-base md:text-lg text-center">
             Please connect your wallet to use the voice interface.
           </p>
           <button
             onClick={openConnectModal}
-            className="mt-4 bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold py-2 px-4 rounded-lg transition-colors"
+            className="mt-6 md:mt-4 bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold py-2 px-4 rounded-lg transition-colors"
           >
             Connect Wallet
           </button>

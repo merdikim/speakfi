@@ -26,8 +26,7 @@ export const getBridgeRoute = async ({
     const route = routes[0]
     return route
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to fetch bridge route')
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch bridge route')
   }
 }
 
@@ -40,7 +39,6 @@ export const executeSelectedRoute = async ({ route }: { route: Route }) => {
     })
     console.log('executedRoute', executedRoute)
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to execute the selected route')
+    throw new Error(error instanceof Error ? error.message : 'Failed to execute route')
   }
 }
