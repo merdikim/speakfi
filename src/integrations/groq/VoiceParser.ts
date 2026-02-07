@@ -1,37 +1,50 @@
+import type { RoutesRequest } from '@lifi/sdk'
 import { Groq } from 'groq-sdk'
 
 const DEFI_PARSER_SYSTEM_PROMPT = `You are a DeFi transaction parser. Your job is to convert natural language voice commands into structured transaction plans.
 
-Supported chains: Ethereum, Polygon, Arbitrum, Optimism, Sui
+Supported chains: Base, Optimism, Arbitrum, Polygon, Ethereum
 Supported operations:
 - Bridge: Move tokens between chains
-- Swap: Exchange one token for another
-- Deposit: Put tokens into a vault or pool
-- Stake: Lock tokens for rewards
-- Add Liquidity: Provide liquidity to a DEX pool
+- Swap: Exchange one token for another 
+- Transfer: Send tokens to another address
 
 When parsing commands, return a JSON object with this structure:
 {
-  "steps": [
-    {
-      "type": "bridge|swap|deposit|stake|add_liquidity",
-      "fromChain": "chain name",
-      "toChain": "chain name",
-      "fromToken": "token symbol",
-      "toToken": "token symbol (if applicable)",
-      "amount": number,
-      "protocol": "specific protocol if mentioned"
-    }
-  ],
-  "chains": ["list of chains involved"],
-  "risks": ["list of potential risks or warnings"]
+  "fromChainId": "ChainId enum value",
+  "toChainId": "ChainId enum value",
+  "fromTokenAddress": "token contract address",
+  "toTokenAddress": "token contract address",
+  "fromAmount": "amount as string",
+  "fromAddress": "user's wallet address"
 }
 
-Be conservative with gas estimates. Add warnings for:
-- Large transactions (>$1000)
-- High slippage potential
-- Multiple chain hops
-- Unaudited protocols`
+Token Address References (for USDC) and Chain IDs:
+const chains = {
+  base: {
+    chainId: 8453,
+    tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  },
+  optimism: {
+    chainId: 10,
+    tokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+  },
+  arbitrum: {
+    chainId: 42161,
+    tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  },
+  polygon: {
+    chainId: 137,
+    tokenAddress: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+  },
+  ethereum: {
+    chainId: 1,
+    tokenAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  },
+}
+
+
+Only return valid JSON. Do not include any markdown formatting or explanatory text. If the command cannot be parsed, return an empty JSON object: {}.`
 
 class VoiceCommandParser {
   private groq: Groq
@@ -40,7 +53,7 @@ class VoiceCommandParser {
     this.groq = new Groq({ apiKey, dangerouslyAllowBrowser: true })
   }
 
-  async parseCommand(voiceCommand: string): Promise<DeFiTransaction> {
+  async parseCommand(voiceCommand: string): Promise<RoutesRequest> {
     try {
       const response = await this.groq.chat.completions.create({
         model: 'openai/gpt-oss-120b',
@@ -59,39 +72,13 @@ class VoiceCommandParser {
       })
 
       const transactionString = response.choices[0].message.content || ''
-      const transaction = JSON.parse(transactionString) as DeFiTransaction
+      const transaction = JSON.parse(transactionString) as RoutesRequest
 
       return transaction
     } catch (error) {
       console.error('Error parsing voice command:', error)
       throw new Error('Failed to parse voice command. Please try again.')
     }
-  }
-
-  generateSummary(transaction: DeFiTransaction): string {
-    const stepDescriptions = transaction.steps.map((step, index) => {
-      switch (step.type) {
-        case 'bridge':
-          return `${index + 1}. Bridge ${step.amount} ${step.fromToken} from ${step.fromChain} to ${step.toChain}`
-        case 'swap':
-          return `${index + 1}. Swap ${step.amount} ${step.fromToken} for ${step.toToken}`
-        case 'deposit':
-          return `${index + 1}. Deposit ${step.amount} ${step.fromToken} into ${step.protocol || 'vault'}`
-        case 'stake':
-          return `${index + 1}. Stake ${step.amount} ${step.fromToken}`
-        case 'add_liquidity':
-          return `${index + 1}. Add ${step.amount} ${step.fromToken} to liquidity pool`
-        default:
-          return `${index + 1}. ${step.type} ${step.amount} ${step.fromToken}`
-      }
-    })
-
-    return `
-Transaction Summary:
-${stepDescriptions.join('\n')}
-Chains: ${transaction.chains.join(', ')}
-${transaction.risks.length > 0 ? `\nWarnings:\n${transaction.risks.map((r) => `⚠️ ${r}`).join('\n')}` : ''}
-    `.trim()
   }
 }
 

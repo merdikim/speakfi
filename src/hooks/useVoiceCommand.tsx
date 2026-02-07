@@ -17,11 +17,12 @@ const useVoiceCommand = (audioCommand: string) => {
     queryKey: ['parseCommand', audioCommand],
     queryFn: async () => {
       if (audioCommand.length == 0 || !address) return null
-      const result = '' //await voiceCommandParser.parseCommand(audioCommand)
-      //const bridgeRoute = await getBridgeRoute({ address })
+      const command = await voiceCommandParser.parseCommand(audioCommand)
+      const bridgeRoute = await getBridgeRoute({command, address })
+      console.log(bridgeRoute)
       //const res = await executeSelectedRoute({ route: bridgeRoute })
 
-      return result as unknown as DeFiTransaction
+      return ''// bridgeRoute
     },
     enabled: !!audioCommand && !!address,
   })

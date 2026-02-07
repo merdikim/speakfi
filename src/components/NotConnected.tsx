@@ -31,7 +31,6 @@ const NotConnected = () => {
           </button>
         </div>
       </div>
-      {/* <p className="text-gray-500 text-lg ">Please connect your wallet to use the voice interface.</p> */}
     </div>
   )
 }

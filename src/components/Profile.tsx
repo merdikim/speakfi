@@ -3,9 +3,7 @@ import { Button } from '@/components/ui/button'
 import {
   Popover,
   PopoverContent,
-  PopoverDescription,
   PopoverHeader,
-  PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
 
@@ -42,7 +40,7 @@ const ProfileImage = () => {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className='flex items-center gap-2 cursor-pointer'>
+      <div className="flex items-center gap-2 cursor-pointer">
         <img
           src={avatar || 'https://placehold.co/32'}
           className="h-12 w-12 rounded-full"
@@ -57,11 +55,11 @@ const ProfileImage = () => {
         </div>
       </div>
 
-      {!name && (
+      {/* {!name && (
         <div className="w-[300px] h-10 border rounded-2xl flex items-center justify-center border-gray-200">
           Consider purchasing an ENS name
         </div>
-      )}
+      )} */}
     </div>
   )
 }

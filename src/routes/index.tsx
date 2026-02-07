@@ -1,5 +1,5 @@
 import NotConnected from '@/components/NotConnected'
-import VoiceInterface from '@/components/VoiceInterface'
+import Home from '@/components/Home'
 import { createFileRoute } from '@tanstack/react-router'
 import { useAccount } from 'wagmi'
 
@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center bg-gray-100">
-      {isConnected ? <VoiceInterface /> : <NotConnected />}
+      {isConnected ? <Home /> : <NotConnected />}
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import {
-  ChainId,
   type RoutesRequest,
   type Route,
   getRoutes,
@@ -7,17 +6,18 @@ import {
 } from '@lifi/sdk'
 
 export const getBridgeRoute = async ({
+  command,
   address,
 }: {
+  command: RoutesRequest
   address: string
 }): Promise<Route> => {
-  const routesRequest: RoutesRequest = {
-    fromChainId: ChainId.BAS,
-    toChainId: ChainId.SUI,
-    fromTokenAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC on Base
-    toTokenAddress:
-      '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC', // USDC on Sui
-    fromAmount: '1000000', // 1 USDC
+  const routesRequest = {
+    fromChainId: command.fromChainId,
+    toChainId: command.toChainId,
+    fromTokenAddress: command.fromTokenAddress,
+    toTokenAddress: command.toTokenAddress,
+    fromAmount: String(Number(command.fromAmount) * 10 ** 6),
     fromAddress: address, // User's address
   }
 

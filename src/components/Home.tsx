@@ -1,16 +1,31 @@
-import React, { useState } from 'react'
-import VoiceInput from './VoiceInput'
+import React, { useEffect } from 'react'
 import useVoiceCommand from '@/hooks/useVoiceCommand'
 import { cn } from '@/lib/utils'
-import TransactionLoading from './skeletons/TransactionLoading'
-import ChainSelection from './ChainSelection'
 import { Profile } from './Profile'
+import VoiceInputWidget from './VoiceInputWidget'
+import { useLeopard } from '@picovoice/leopard-react'
+import Transcript from './Transcript'
+import TransactionLoading from './skeletons/TransactionLoading'
 
-const VoiceDeFiInterface: React.FC = () => {
-  const [transcript, setTranscript] = useState('')
-  const [audioCommand, setAudioCommand] = useState('swap')
+const ACCESS_KEY = import.meta.env.VITE_PICOVOICE_API_KEY || ''
+const leopardModel = {
+  publicPath: 
+    'https://raw.githubusercontent.com/Picovoice/leopard/master/lib/common/leopard_params.pv',
+}
+
+const Home: React.FC = () => {
+  const {
+    result,
+    isLoaded,
+    error,
+    init,
+    startRecording,
+    stopRecording,
+    isRecording,
+    release,
+  } = useLeopard()
   const { transaction, isTransactionLoading, isTransactionError } =
-    useVoiceCommand(audioCommand)
+    useVoiceCommand(result?.transcript || '')
 
   const isTransactionValid =
     transaction && transaction.steps && transaction.steps.length > 0
@@ -44,35 +59,42 @@ const VoiceDeFiInterface: React.FC = () => {
   //   }
   // }
 
+  const initializeLeopard = async () => {
+    try {
+      await init(`${ACCESS_KEY}`, leopardModel)
+    } catch (err) {
+      console.error('Failed to initialize Leopard:', err)
+    }
+  }
+
+  useEffect(() => {
+    initializeLeopard()
+    return () => {
+      release()
+    }
+  }, [])
+
   return (
     <div className="h-full w-full flex flex-col items-center p-8">
       <Profile />
       <div
         className={cn(
-          isTransactionValid && !isTransactionLoading
-            ? 'justify-start'
+          isTransactionValid ||
+            (result?.transcript && result.transcript.length > 0)
+            ? 'justify-start pt-20'
             : 'justify-center',
           'h-full transition-all ease-in-out space-y-2 max-w-2xl w-full flex flex-col items-center',
         )}
       >
-        {/* <ChainSelection /> */}
-        <VoiceInput
-          setTranscript={setTranscript}
-          setAudioCommand={setAudioCommand}
-          isProcessing={false}
+        <VoiceInputWidget
+          isLoaded={isLoaded}
+          isRecording={isRecording}
+          startRecording={startRecording}
+          stopRecording={stopRecording}
+          error={error}
         />
-
-        <div>
-          {/* {transcript && (
-            <div className="mt-6 w-full">
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <p className="text-sm text-gray-500 mb-2">You said:</p>
-                <p className="text-lg text-gray-800">{transcript}</p>
-              </div>
-            </div>
-          )} */}
-        </div>
-        {isTransactionLoading && <TransactionLoading />}
+        <Transcript transcript={result?.transcript || ''} />
+        <div>{isTransactionLoading && <TransactionLoading />}</div>
 
         {isTransactionValid && (
           <div className="bg-white w-full rounded-2xl shadow-lg p-8 border border-gray-100">
@@ -119,4 +141,4 @@ const VoiceDeFiInterface: React.FC = () => {
   )
 }
 
-export default VoiceDeFiInterface
+export default Home
