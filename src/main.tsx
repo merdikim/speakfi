@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 import reportWebVitals from './reportWebVitals.ts'
+import { Toaster } from "@/components/ui/sonner"
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import './styles.css'
 import '@rainbow-me/rainbowkit/styles.css'
@@ -40,6 +41,7 @@ if (rootElement && !rootElement.innerHTML) {
         <CustomWagmiProvider>
           <RainbowKitProvider modalSize="compact">
             <RouterProvider router={router} />
+            <Toaster position="top-center" />
           </RainbowKitProvider>
         </CustomWagmiProvider>
       </TanStackQueryProvider.Provider>

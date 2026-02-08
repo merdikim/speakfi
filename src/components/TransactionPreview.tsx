@@ -3,6 +3,7 @@ import { chains, formatAmount } from '@/utils'
 import type { Route } from '@lifi/sdk'
 import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 
 const getChainDetails = (chainId: number): { name: string, icon: string } => {
@@ -26,8 +27,8 @@ const TransactionPreview = ({ tx, clearTransaction }: { tx: Route, clearTransact
       const res = await executeSelectedRoute({ route: tx })
       const status = res.steps[0].execution?.status
       if (status === 'DONE') {
-        alert('Transaction executed successfully!')
-        clearTransaction()
+        toast.success('Transaction executed successfully!')
+        //clearTransaction()
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to confirm transaction')
