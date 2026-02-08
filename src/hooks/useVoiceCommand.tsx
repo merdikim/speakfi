@@ -13,6 +13,7 @@ const useVoiceCommand = (audioCommand: string) => {
     data: transactionDetails,
     isLoading: isTransactionDetailsLoading,
     isError: isTransactionDetailsError,
+    error: transactionDetailsError,
   } = useQuery({
     queryKey: ['parseCommand', audioCommand],
     queryFn: async () => {
@@ -25,7 +26,7 @@ const useVoiceCommand = (audioCommand: string) => {
     enabled: !!audioCommand && !!address,
   })
 
-  return { transactionDetails, isTransactionDetailsLoading, isTransactionDetailsError }
+  return { transactionDetails,  isTransactionDetailsLoading, isTransactionDetailsError, transactionDetailsError }
 }
 
 export default useVoiceCommand

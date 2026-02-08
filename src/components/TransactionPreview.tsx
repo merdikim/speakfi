@@ -5,13 +5,16 @@ import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 
-const getChainName = (chainId: number): string => {
+const getChainDetails = (chainId: number): { name: string, icon: string } => {
   const chain = Object.values(chains).find((ch) => ch?.chainId === chainId)
-  return chain?.name || `Chain ${chainId}`
+  return {
+    name: chain?.name || `Chain ${chainId}`,
+    icon: chain?.icon || '',
+  }
 }
 
 
-const TransactionPreview = ({ tx }: { tx: Route }) => {
+const TransactionPreview = ({ tx, clearTransaction }: { tx: Route, clearTransaction: () => void }) => {
   const fromAmount = formatAmount(tx.fromAmount, tx.fromToken.decimals)
   const toAmount = formatAmount(tx.toAmount, tx.toToken.decimals)
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +24,11 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
     try {
       setIsExecuting(true)
       const res = await executeSelectedRoute({ route: tx })
-      console.log(res)
+      const status = res.steps[0].execution?.status
+      if (status === 'DONE') {
+        alert('Transaction executed successfully!')
+        clearTransaction()
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to confirm transaction')
     } finally {
@@ -69,7 +76,10 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
               />
               <div>
                 <p className="text-sm text-gray-600">From</p>
-                <p className="font-semibold text-gray-900">{getChainName(tx.fromChainId)}</p>
+                <div className='flex items-center'>
+                  <p className="font-semibold text-gray-900">{getChainDetails(tx.fromChainId).name}</p>
+                  <img src={getChainDetails(tx.fromChainId).icon} alt={`${getChainDetails(tx.fromChainId).name} icon`} className="w-4 h-4 inline-block ml-2" />
+                </div>
               </div>
             </div>
             <div className="mt-3 pt-3 border-t border-gray-100">
@@ -99,7 +109,10 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
               />
               <div>
                 <p className="text-sm text-gray-600">To</p>
-                <p className="font-semibold text-gray-900">{getChainName(tx.toChainId)}</p>
+                <div className='flex items-center'>
+                  <p className="font-semibold text-gray-900">{getChainDetails(tx.toChainId).name}</p>
+                  <img src={getChainDetails(tx.toChainId).icon} alt={`${getChainDetails(tx.toChainId).name} icon`} className="w-4 h-4 inline-block ml-2" />
+                </div>
               </div>
             </div>
             <div className="mt-3 pt-3 border-t border-gray-100">
@@ -161,6 +174,7 @@ const TransactionPreview = ({ tx }: { tx: Route }) => {
       )}
       <div className="flex flex-col md:flex-row gap-3 mt-10">
         <button
+          onClick={clearTransaction}
           className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
         >
           Decline

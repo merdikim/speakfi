@@ -34,10 +34,11 @@ export const executeSelectedRoute = async ({ route }: { route: Route }) => {
   try {
     const executedRoute = await executeRoute(route, {
       updateRouteHook(route) {
-        console.log('route', route)
+        console.log('status', route.steps[0].execution?.status)
+        console.log('estimated time in seconds', route.steps[0].estimate.executionDuration)
       },
     })
-    console.log('executedRoute', executedRoute)
+    return executedRoute
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : 'Failed to execute route')
   }

@@ -5,6 +5,7 @@ type VoiceInputWidgetProps = {
   isRecording: boolean
   startRecording: () => Promise<void>
   stopRecording: () => Promise<void>
+  clear: () => void
   error: Error | null
 }
 
@@ -13,10 +14,12 @@ const VoiceInputWidget = ({
   isRecording,
   startRecording,
   stopRecording,
+  clear,
   error
 }: VoiceInputWidgetProps) => {
   const start = async () => {
     if (isLoaded) {
+      clear()
       await startRecording()
     }
   }
