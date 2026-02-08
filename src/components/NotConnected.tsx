@@ -31,6 +31,7 @@ const NotConnected = () => {
           </button>
         </div>
       </div>
+      <img src="/logo.png" alt="Logo" className="absolute bottom-8 right-8 w-20 h-20" />
     </div>
   )
 }
