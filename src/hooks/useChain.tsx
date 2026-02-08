@@ -7,7 +7,7 @@ const useChain = () => {
   const [chain, setChain] = React.useState(chains.ethereum)
   console.log(chainId)
 
-  return { chain }
+  return { chain, setChain }
 }
 
 export default useChain
